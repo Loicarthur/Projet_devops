@@ -1,12 +1,23 @@
-function appendToDisplay(value) {
-    document.getElementById('display').value += value;
-}
+const express = require('express');
+const path = require('path');
+const app = express();
+const port = 8080;
 
-function clearDisplay() {
-    document.getElementById('display').value = '';
-}
+// Middleware to serve static files
+app.use(express.static(path.join(__dirname, 'public')));
 
-function calculate() {
-    let display = document.getElementById('display');
-    display.value = eval(display.value);
-}
+// Route to handle the calculation
+app.get('/calculate', (req, res) => {
+    const expression = req.query.expression;
+    try {
+        const result = eval(expression); // Not recommended for production use
+        res.send({ result });
+    } catch (e) {
+        res.status(400).send({ error: 'Invalid expression' });
+    }
+});
+
+// Start the server
+app.listen(port, () => {
+    console.log(`App running on port ${port}`);
+});
